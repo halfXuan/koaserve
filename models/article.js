@@ -16,6 +16,7 @@ const articleSchema = new Schema({
     createDate:{type: Date},//创建时间
     status:{type: Number, enum: [2,1,0], default: 0 },// 1 上架；2 下架；0 删除
     author:{type: String}, //作者
+    updateDate: {type: Date},//更新时间
 })
 
 // Model

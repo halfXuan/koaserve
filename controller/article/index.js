@@ -2,9 +2,12 @@ const ArticleModel = require('../../models/article')
 import Admin from '../admin'
 class Article extends Admin {
     constructor(){
-
+        super()
+        this.addArticle = this.addArticle.bind(this)
+        this.editArticle = this.editArticle.bind(this)
+        this.changeArticleStatus = this.changeArticleStatus.bind(this)
     }
-    async webQuery(ctx, next){
+    async webQueryArticle(ctx, next){
         const {pageSize,pageNo} = ctx.query
         let params = ctx.query
         params.status = 1
@@ -43,7 +46,7 @@ class Article extends Admin {
             data: datas ? datas: []
         }
     }
-    async adminQuery(ctx, next){
+    async adminQueryArticle(ctx, next){
         const {pageSize,pageNo} = ctx.query
         let params = ctx.query
         delete params.pageSize
@@ -76,19 +79,99 @@ class Article extends Admin {
             }
             return 
         }
-        const datas = await ArticleModel.find()
-        ctx.body = {
-            data: datas ? datas: []
+    }
+    async queryArticleById(){
+        const {id} = ctx.query
+        try{
+            const detail = await ArticleModel.findById({_id: id})
+            await ArticleModel.findByIdAndUpdate({ _id: id }, { $inc: { browse: 1 } }, { multi: false })
+            ctx.body = {
+                status: 1,
+                data: detail?detail:{},
+                type: 'QUERY_ARTICLE_NULL',
+                message: '查询成功',
+            } 
+        }catch(err){
+            ctx.body = {
+                status: 0,
+                type: 'QUERY_ARTICLEBYID_FAILED',
+                message: '查询失败',
+            }
+            return 
         }
     }
-    async queryById(){
-        
+    async addArticle(ctx, next){
+        const params = ctx.request.body
+        params.createDate = this.formatDate()
+        try{
+            await new ArticleModel(params).save()
+            ctx.body = {
+                status: 1,
+                type: 'ADD_ARTICLE_SUCCESS',
+                message: '添加成功',
+            } 
+        }catch(err){
+            ctx.body = {
+                status: 0,
+                type: 'QUERY_ARTICLEBYID_FAILED',
+                message: '查询失败',
+            }
+            return 
+        }
     }
-    async add(ctx, next){
-        await new ArticleModel(ctx.request.body).save()
-        ctx.body = {
-            status: 1,
-			message: '添加成功',
+    async editArticle(ctx, next){
+        const params = ctx.request.body
+        params.updateDate = this.formatDate()
+        try{
+            await new ArticleModel(params).save()
+            ctx.body = {
+                status: 1,
+                type: 'ADD_ARTICLE_SUCCESS',
+                message: '修改成功',
+            } 
+        }catch(err){
+            ctx.body = {
+                status: 0,
+                type: 'UPDATE_ARTICLE_FAILED',
+                message: '查询失败',
+            }
+            return 
+        }
+    }
+    async changeArticleStatus(ctx, next){
+        const {id, status} = ctx.request.body
+        try{
+            await ArticleModel.findByIdAndUpdate({_id: id},{status, updateDate: this.formatDate()})
+            ctx.body = {
+                status: 1,
+                type: 'ADD_ARTICLE_SUCCESS',
+                message: '修改成功',
+            } 
+        }catch(err){
+            ctx.body = {
+                status: 0,
+                type: 'UPDATE_ARTICLE_FAILED',
+                message: '查询失败',
+            }
+            return 
+        }
+    }
+    async deleteArticle(ctx, next){
+        const {id} = ctx.request.body
+        try{
+            await ArticleModel.findByIdAndRemove({_id: id})
+            ctx.body = {
+                status: 1,
+                type: 'ADD_ARTICLE_SUCCESS',
+                message: '删除成功',
+            } 
+        }catch(err){
+            ctx.body = {
+                status: 0,
+                type: 'UPDATE_ARTICLE_FAILED',
+                message: '查询失败',
+            }
+            return 
         }
     }
 }
