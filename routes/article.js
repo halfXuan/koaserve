@@ -1,4 +1,4 @@
-import Article from '../controller/article'
+import Article from '../controller/article/index'
 const router =require('koa-router')()
 router.prefix('/api/article')
 

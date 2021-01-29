@@ -2,9 +2,8 @@ const ArticleModel = require('../../models/article')
 const AdminModel = require('../../models/admin')
 const CommentModel = require('../../models/comment')
 
-import Admin from '../admin'
-
-class Comment extends Admin {
+import Util from '../../prototype'
+class Comment extends Util {
     constructor(){
         super()
         this.editComment = this.editComment.bind(this)
@@ -152,7 +151,7 @@ class Comment extends Admin {
             let num = pageNo * 1 - 1 || 0
             let result = await CommentModel.find(params)
             if(result){
-                let curComment = await Article.find(params).populate('article').populate('author').populate('replyComment').populate('replyUser').skip(num * size).limit(size).sort({ '_id': -1 })
+                let curComment = await ArticleModel.find(params).populate('article').populate('author').populate('replyComment').populate('replyUser').skip(num * size).limit(size).sort({ '_id': -1 })
                 ctx.body = {
                     status: 1,
                     type: 'QUERY_COMMENT_Finsihed',

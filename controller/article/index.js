@@ -1,6 +1,6 @@
 const ArticleModel = require('../../models/article')
-import Admin from '../admin'
-class Article extends Admin {
+import Util from '../../prototype'
+class Article extends Util {
     constructor(){
         super()
         this.addArticle = this.addArticle.bind(this)
@@ -16,9 +16,9 @@ class Article extends Admin {
         try{
             let size = pageSize * 1 || 10
             let num = pageNo * 1 - 1 || 0
-            let article = await Article.find(params)
+            let article = await ArticleModel.find(params)
             if(article){
-                let curArt = await Article.find(params).skip(num * size).limit(size).sort({ '_id': -1 })
+                let curArt = await ArticleModel.find(params).skip(num * size).limit(size).sort({ '_id': -1 })
                 ctx.body = {
                     status: 1,
                     type: 'QUERY_ARTICLE_Finsihed',
@@ -54,9 +54,9 @@ class Article extends Admin {
         try{
             let size = pageSize * 1 || 10
             let num = pageNo * 1 - 1 || 0
-            let article = await Article.find(params)
+            let article = await ArticleModel.find(params)
             if(article){
-                let curArt = await Article.find(params).skip(num * size).limit(size).sort({ '_id': -1 })
+                let curArt = await ArticleModel.find(params).skip(num * size).limit(size).sort({ '_id': -1 })
                 ctx.body = {
                     status: 1,
                     type: 'QUERY_ARTICLE_Finsihed',

@@ -1,25 +1,15 @@
 const AdminModel = require('../../models/admin')
+import Util from '../../prototype'
 const jwt = require('jwt-simple')
 const jwtSecret = 'wewewewe45354'
 const tokenExpiresTime = 1000 * 60 * 60 * 24 * 3
-class Admin {
+class Admin extends Util {
     constructor(){
+        super()
         this.login = this.login.bind(this)
         this.register = this.register.bind(this)
     }
-    add0(num){
-        return num < 10 ? '0' + num : num
-    }
-    formatDate(){
-        const time = new Date();
-        const year = time.getFullYear()
-        const month = time.getMonth() + 1
-        const day = time.getDate()
-        const h = time.getHours()
-        const minute = time.getMinutes()
-        const second = time.getSeconds()
-        return year + '-' + this.add0(month) + '-' + this.add0(day) + ' ' + this.add0(h) + ':' + this.add0(minute) + ':' + this.add0(second)
-    }
+   
     setToken(name){
         let payload = {
             exp:Date.now() + tokenExpiresTime,
